@@ -1,0 +1,28 @@
+{
+  "name": "mellon",
+  "version": "0.0.0",
+  "description": "Documentation manager and browser.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -R spec && npm run coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ravishi/mellon"
+  },
+  "author": "Dirley Rodrigues <dirleyrls@gmail.com> (http://romenor.net/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ravishi/mellon/issues"
+  },
+  "dependencies": {
+    "async": "^0.9.0",
+    "plist": "^1.1.0"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "mkdirp": "^0.5.0",
+    "mocha": "^1.21.4"
+  },
+  "homepage": "https://github.com/ravishi/mellon"
+}
