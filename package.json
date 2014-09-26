@@ -1,7 +1,7 @@
 {
   "name": "mellon",
   "version": "0.0.0",
-  "description": "Documentation manager and browser.",
+  "description": "The programmer's best friend",
   "main": "index.js",
   "scripts": {
     "test": "mocha -R spec && npm run coverage"
@@ -17,7 +17,8 @@
   },
   "dependencies": {
     "async": "^0.9.0",
-    "plist": "^1.1.0"
+    "plist": "^1.1.0",
+    "sqlite3": "~3.0.0"
   },
   "devDependencies": {
     "chai": "^1.9.1",

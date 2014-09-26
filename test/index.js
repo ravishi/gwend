@@ -5,6 +5,9 @@ var readInstalled = require('../lib/installed');
 var mkdirp = require('mkdirp');
 var fs = require('fs');
 var plist = require('plist');
+var sqlite3 = require('sqlite3');
+var async = require('async');
+var runQueryOnDocset = require('../lib/mellon');
 
 function mkdirpSync(path) {
   try {
@@ -89,6 +92,38 @@ describe('readInstalled', function() {
       expect(d.info).to.be.equal(info);
 
       done();
+    });
+  });
+});
+
+describe('runQueryOnDocset', function () {
+  it('should actually run the queries', function(done) {
+    var docsets = [];
+    var docsets_dir = path.join(__dirname, 'docsets');
+
+    readInstalled(docsets_dir, function(err, i) {
+      i.forEach(function(i) {
+        //console.log(JSON.stringify([err, i]));
+        var dbfile = path.join(i.path, 'Contents', 'Resources', 'docSet.dsidx');
+        docsets.push({
+          db: new sqlite3.Database(dbfile, sqlite3.OPEN_READONLY),
+          info: i,
+          prefix: null
+        });
+      });
+
+      //console.log(JSON.stringify(docsets));
+      var ds = docsets.shift();
+      var result = [];
+
+      runQueryOnDocset(ds, "filter", function(err, r) {
+        result.push(r);
+      }, checkExpectationsAndCallDone);
+
+      function checkExpectationsAndCallDone() {
+        expect(result.length).to.be.equal(5);
+        done();
+      }
     });
   });
 });
