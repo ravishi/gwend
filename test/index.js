@@ -7,7 +7,7 @@ var fs = require('fs');
 var plist = require('plist');
 var sqlite3 = require('sqlite3');
 var async = require('async');
-var runQueryOnDocset = require('../lib/mellon');
+var mellon = require('../lib/mellon');
 
 function mkdirpSync(path) {
   try {
@@ -96,27 +96,48 @@ describe('readInstalled', function() {
   });
 });
 
-describe('runQueryOnDocset', function () {
-  it('should actually run the queries', function(done) {
-    var docsets = [];
-    var docsets_dir = path.join(__dirname, 'docsets');
+function readInstalledEx(dir, cb) {
+  readInstalled(dir, function(err, i) {
+    var docsets = i.map(function(i) {
+      var dbfile = path.join(i.path, 'Contents', 'Resources', 'docSet.dsidx');
+      return {
+        db: new sqlite3.Database(dbfile, sqlite3.OPEN_READONLY),
+        info: i,
+        prefix: null
+      };
+    });
 
-    readInstalled(docsets_dir, function(err, i) {
-      i.forEach(function(i) {
-        //console.log(JSON.stringify([err, i]));
-        var dbfile = path.join(i.path, 'Contents', 'Resources', 'docSet.dsidx');
-        docsets.push({
-          db: new sqlite3.Database(dbfile, sqlite3.OPEN_READONLY),
-          info: i,
-          prefix: null
-        });
-      });
+    cb(null, docsets);
+  });
+}
 
-      //console.log(JSON.stringify(docsets));
-      var ds = docsets.shift();
+describe('mellon', function() {
+  var docsets = [];
+  var docsets_dir = path.join(__dirname, 'docsets');
+
+  readInstalledEx(docsets_dir, function(err, i) {
+    docsets = i;
+  });
+
+  describe('discoverDocsetType', function() {
+    it('should identify docsets', function(done) {
+      var ds = docsets[0];
+
+      mellon.discoverDocsetType(ds, checkExpectationsAndCallDone);
+
+      function checkExpectationsAndCallDone() {
+        expect(ds.type).to.be.equal(mellon.ZDASH);
+        done();
+      }
+    });
+  });
+
+  describe('runQueryOnDocset', function () {
+    it('should actually run the queries', function(done) {
+      var ds = docsets[0];
       var result = [];
 
-      runQueryOnDocset(ds, "filter", function(err, r) {
+      mellon.runQueryOnDocset(ds, "filter", function(err, r) {
         result.push(r);
       }, checkExpectationsAndCallDone);
 
