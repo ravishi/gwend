@@ -1,7 +1,7 @@
 var async = require('async');
 var expect = require('chai').expect;
 var fs = require('fs');
-var mellon = require('../lib/mellon');
+var gwend = require('../lib/gwend');
 var mkdirp = require('mkdirp');
 var path = require('path');
 var plist = require('plist');
@@ -124,7 +124,7 @@ function readInstalledEx(dir, cb) {
   });
 }
 
-describe('mellon.query', function() {
+describe('gwend.query', function() {
   var docsets = [];
   var docsets_dir = path.join(__dirname, 'docsets');
 
@@ -162,8 +162,8 @@ describe('mellon.query', function() {
   });
 });
 
-describe('mellon.DocsetRegistry', function() {
-  var registry = new mellon.DocsetRegistry();
+describe('gwend.DocsetRegistry', function() {
+  var registry = new gwend.DocsetRegistry();
   var docsets_dir = path.join(__dirname, 'docsets');
 
   describe('#scanFolder', function() {

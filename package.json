@@ -1,5 +1,5 @@
 {
-  "name": "mellon",
+  "name": "gwend",
   "version": "0.0.0",
   "description": "The programmer's best friend",
   "main": "index.js",
@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/ravishi/mellon"
+    "url": "git://github.com/ravishi/gwend"
   },
   "author": "Dirley Rodrigues <dirleyrls@gmail.com> (http://romenor.net/)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ravishi/mellon/issues"
+    "url": "https://github.com/ravishi/gwend/issues"
   },
   "dependencies": {
     "async": "^0.9.0",
@@ -25,5 +25,5 @@
     "mkdirp": "^0.5.0",
     "mocha": "^1.21.4"
   },
-  "homepage": "https://github.com/ravishi/mellon"
+  "homepage": "https://github.com/ravishi/gwend"
 }
