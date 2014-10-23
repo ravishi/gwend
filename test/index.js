@@ -1,13 +1,14 @@
-var path = require('path');
-var should = require('chai').should();
-var expect = require('chai').expect;
-var readInstalled = require('../lib/installed');
-var mkdirp = require('mkdirp');
-var fs = require('fs');
-var plist = require('plist');
-var sqlite3 = require('sqlite3');
 var async = require('async');
+var expect = require('chai').expect;
+var fs = require('fs');
 var mellon = require('../lib/mellon');
+var mkdirp = require('mkdirp');
+var path = require('path');
+var plist = require('plist');
+var query = require('../lib/query');
+var readInstalled = require('../lib/installed');
+var should = require('chai').should();
+var sqlite3 = require('sqlite3');
 
 function mkdirpSync(path) {
   try {
@@ -111,7 +112,7 @@ function readInstalledEx(dir, cb) {
   });
 }
 
-describe('mellon', function() {
+describe('mellon.query', function() {
   var docsets = [];
   var docsets_dir = path.join(__dirname, 'docsets');
 
@@ -123,10 +124,10 @@ describe('mellon', function() {
     it('should identify docsets', function(done) {
       var ds = docsets[0];
 
-      mellon.discoverDocsetType(ds, checkExpectationsAndCallDone);
+      query.discoverDocsetType(ds, checkExpectationsAndCallDone);
 
       function checkExpectationsAndCallDone() {
-        expect(ds.type).to.be.equal(mellon.ZDASH);
+        expect(ds.type).to.be.equal(query.ZDASH);
         done();
       }
     });
@@ -137,7 +138,7 @@ describe('mellon', function() {
       var ds = docsets[0];
       var result = [];
 
-      mellon.runQueryOnDocset(ds, "filter", function(err, r) {
+      query.runQueryOnDocset(ds, "filter", function(err, r) {
         result.push(r);
       }, checkExpectationsAndCallDone);
 
@@ -145,6 +146,50 @@ describe('mellon', function() {
         expect(result.length).to.be.equal(5);
         done();
       }
+    });
+  });
+});
+
+describe('mellon.DocsetRegistry', function() {
+  var registry = new mellon.DocsetRegistry();
+  var docsets_dir = path.join(__dirname, 'docsets');
+
+  describe('#scanFolder', function() {
+    it('should work', function(done) {
+      registry.scanFolder(docsets_dir, function(err, found) {
+        expect(found.length).to.be.equal(1);
+        done();
+      });
+    });
+  });
+
+  describe('#queryEach', function() {
+    it('should work', function(done) {
+      // XXX Yay, we are running in the same context as previous tests!
+      expect(registry.docsets.length).to.be.equal(1);
+
+      var result = [];
+
+      registry.queryEach('filter', function(err, r) {
+        result.push(r);
+      }, checkExpectationsAndCallDone);
+
+      function checkExpectationsAndCallDone() {
+        expect(result.length).to.be.equal(5);
+        done();
+      }
+    });
+  });
+
+  describe('#queryAll', function() {
+    it('should work', function(done) {
+      // XXX Yay, we are running in the same context as previous tests!
+      expect(registry.docsets.length).to.be.equal(1);
+
+      registry.queryAll('filter', function(err, r) {
+        expect(r.length).to.be.equal(5);
+        done();
+      });
     });
   });
 });
