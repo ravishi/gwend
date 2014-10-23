@@ -62,6 +62,18 @@ describe('readInstalled', function() {
     });
   });
 
+  it('should ignore non-docset directories', function(done) {
+    var mixed_dir = path.join(__dirname, 'temp', 'mixed');
+
+    mkdirpSync(path.join(mixed_dir, 'this-is-not-a-docset'));
+
+    readInstalled(mixed_dir, function(err, i) {
+      expect(err).to.be.null;
+      expect(i).to.be.empty;
+      done();
+    });
+  });
+
   it('should find all the docsets', function(done) {
     var filled = path.join(__dirname, 'temp', 'filled');
 
