@@ -133,7 +133,18 @@ describe('gwend.query', function() {
   });
 
   describe('discoverDocsetType', function() {
-    it('should identify docsets', function(done) {
+    it('should identify dash docsets', function(done) {
+      var ds = docsets[1];
+
+      query.discoverDocsetType(ds, checkExpectationsAndCallDone);
+
+      function checkExpectationsAndCallDone() {
+        expect(ds.type).to.be.equal(query.DASH);
+        done();
+      }
+    });
+
+    it('should also identify zdash docsets', function(done) {
       var ds = docsets[0];
 
       query.discoverDocsetType(ds, checkExpectationsAndCallDone);
@@ -169,7 +180,7 @@ describe('gwend.DocsetRegistry', function() {
   describe('#scanFolder', function() {
     it('should work', function(done) {
       registry.scanFolder(docsets_dir, function(err, found) {
-        expect(found.length).to.be.equal(1);
+        expect(found.length).to.be.equal(2);
         done();
       });
     });
@@ -178,7 +189,7 @@ describe('gwend.DocsetRegistry', function() {
   describe('#queryEach', function() {
     it('should work', function(done) {
       // XXX Yay, we are running in the same context as previous tests!
-      expect(registry.docsets.length).to.be.equal(1);
+      expect(registry.docsets.length).to.be.equal(2);
 
       var result = [];
 
@@ -196,7 +207,7 @@ describe('gwend.DocsetRegistry', function() {
   describe('#queryAll', function() {
     it('should work', function(done) {
       // XXX Yay, we are running in the same context as previous tests!
-      expect(registry.docsets.length).to.be.equal(1);
+      expect(registry.docsets.length).to.be.equal(2);
 
       registry.queryAll('filter', function(err, r) {
         expect(r.length).to.be.equal(5);
